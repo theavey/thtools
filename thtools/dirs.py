@@ -29,9 +29,10 @@ from contextlib import contextmanager
 
 
 @contextmanager
-def cd(new_dir):
+def cd(new_dir, ignore_blank=False):
     prev_dir = os.getcwd()
-    os.chdir(os.path.expanduser(new_dir))
+    if not ignore_blank or new_dir:
+        os.chdir(os.path.expanduser(new_dir))
     try:
         yield
     finally:
