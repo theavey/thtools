@@ -25,6 +25,7 @@ Functions for saving fairly arbitrary python objects
 ########################################################################
 
 
+import os
 import pickle
 
 
@@ -36,3 +37,7 @@ def save_obj(obj, name):
 def load_obj(name):
     with open('obj/' + name + '.pkl', 'rb') as f:
         return pickle.load(f)
+
+
+def make_obj_dir(directory='./'):
+    os.makedirs(directory+'obj', exist_ok=True)
