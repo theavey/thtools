@@ -29,7 +29,20 @@ Tools to cleanup scratch space on compute nodes
 from collections import defaultdict
 import os
 import getpass
-from thtools import cd
+try:
+    from thtools import cd
+except ImportError:
+    from contextlib import contextmanager
+
+    @contextmanager
+    def cd(new_dir, ignore_blank=False):
+        prev_dir = os.getcwd()
+        if not ignore_blank or new_dir:
+            os.chdir(os.path.expanduser(new_dir))
+        try:
+            yield
+        finally:
+            os.chdir(prev_dir)
 
 
 dict_node = {3: '/net/scc-{}',
