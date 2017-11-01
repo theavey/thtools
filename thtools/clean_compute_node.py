@@ -73,25 +73,28 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
     else:
         _subfolder = subfolder
     path = '{}/scratch/{}'.format(_node, _subfolder)
+    if rm is True or rm is False:
+        _rm = rm
+    else:
+        _rm = rm.lower()
     with cd(path):
         files = os.listdir('./')
         if print_list:
             print('The files in {} are:\n {}'.format(path, files))
         response = False
         dict_response = defaultdict(lambda: False, y=True)
-        if rm is False:
+        if _rm is False:
             return None
-        if rm.lower() == 'ask':
+        if _rm == 'ask':
             response = dict_response[input('Delete all files in '
                                            '{}? [yn]: '.format(path))]
-        if response is True or rm is True:
+        if response is True or _rm is True:
             for name in files:
                 os.remove(name)
         else:
             print('No files removed from "{}".'.format(path))
 
 
-# TODO add if __name__ == __main__ functionality
 if __name__ == '__main__':
     from argparse import ArgumentParser
     parser = ArgumentParser(
