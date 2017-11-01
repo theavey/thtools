@@ -36,7 +36,31 @@ dict_node = {3: '/net/scc-{}',
 
 
 def clean_node(node, print_list=True, rm='ask', subfolder=None):
-    """"""  # TODO add docstring
+    """
+    Clean out scratch folder on a compute node.
+
+    Note, this will not work with directories in the scratch folder. That
+    will raise OSError.
+    :param str node: Designation of the node on which to work.
+        This accepts three different formats. For the node at
+        '/net/scc-na1', any of the following will work: 'na1', 'scc-na1',
+        or '/net/scc-na1'. It seems that capitalization may not matter,
+        at least for the node name.
+    :param bool print_list: Default: True. Print list of files.
+        If True, the list of files (and directories) in the designated folder
+        will be printed.
+    :type rm: bool or str
+    :param rm: Default: 'ask'. Delete the files.
+        If True, the files will be deleted.
+        If 'ask' (ignoring case), input from the user will be requested about
+        whether to delete the files.
+        If anything else, the files will not be deleted.
+    :param str subfolder: Default: None. Subfolder of scratch directory in
+        which to look.
+        If subfolder is None, the user's username will be found with
+        getpass.getuser() and that will be used as the subfolder.
+    :return: None
+    """
     try:
         _node = dict_node[len(node)].format(node)
     except KeyError:
