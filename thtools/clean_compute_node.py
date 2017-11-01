@@ -72,7 +72,7 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         _subfolder = getpass.getuser()
     else:
         _subfolder = subfolder
-    path = '{}/{}'.format(_node, _subfolder)
+    path = '{}/scratch/{}'.format(_node, _subfolder)
     with cd(path):
         files = os.listdir('./')
         if print_list:
@@ -108,7 +108,7 @@ if __name__ == '__main__':
                          help='Ask before deleting the files')
     parser.add_argument('-l', '--list_only', action='store_true',
                         help='Only list the files without deleting '
-                             'anything\nNote: this will override -d, but not '
+                             'anything. Note: this will override -d, but not '
                              '-a')
     parser.add_argument('-f', '--folder', type=str, default='',
                         help='Subfolder on node. Defaults to username')
