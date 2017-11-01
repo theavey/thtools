@@ -79,6 +79,9 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         _rm = rm.lower()
     with cd(path):
         files = os.listdir('./')
+        if len(files) == 0:
+            print('No files in {}'.format(path))
+            return None
         if print_list:
             print('The files in {} are:\n {}'.format(path, files))
         response = False
