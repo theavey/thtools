@@ -29,7 +29,7 @@ Tools to cleanup scratch space on compute nodes
 from collections import defaultdict
 import os
 import getpass
-from . import cd
+from thtools import cd
 
 
 dict_node = {3: '/net/scc-{}',
