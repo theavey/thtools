@@ -100,14 +100,14 @@ if __name__ == '__main__':
                         help='Node or nodes on which to look for scratch files')
     p_group = parser.add_mutually_exclusive_group()
     p_group.add_argument('-p', '--print', action='store_true',
-                         help='Print list of files')
+                         help='Default, print list of files')
     p_group.add_argument('-n', '--no_print', action='store_true',
                          help='Do not print the list of files')
     d_group = parser.add_mutually_exclusive_group()
     d_group.add_argument('-d', '--delete', action='store_true',
                          help='Delete the files without asking')
     d_group.add_argument('-a', '--ask', action='store_true',
-                         help='Ask before deleting the files')
+                         help='Default, ask before deleting the files')
     parser.add_argument('-l', '--list_only', action='store_true',
                         help='Only list the files without deleting '
                              'anything. Note: this will override -d, but not '
