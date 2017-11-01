@@ -79,6 +79,8 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
             print('The files in {} are:\n {}'.format(path, files))
         response = False
         dict_response = defaultdict(lambda: False, y=True)
+        if rm is False:
+            return None
         if rm.lower() == 'ask':
             response = dict_response[input('Delete all files in '
                                            '{}? [yn]: '.format(path))]
