@@ -26,7 +26,6 @@ Tools to cleanup scratch space on compute nodes
 
 from collections import defaultdict
 import os
-import shutil
 import getpass
 from . import cd
 
@@ -37,7 +36,7 @@ dict_node = {3: '/net/scc-{}',
 
 
 def clean_node(node, print_list=True, rm='ask', subfolder=None):
-    """"""
+    """"""  # TODO add docstring
     try:
         _node = dict_node[len(node)].format(node)
     except KeyError:
@@ -60,3 +59,6 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         if response is True or rm is True:
             for name in files:
                 os.remove(name)
+
+
+# TODO add if __name__ == __main__ functionality
