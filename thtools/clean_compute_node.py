@@ -1,3 +1,5 @@
+#! /usr/bin/env python3
+
 """
 Tools to cleanup scratch space on compute nodes
 
