@@ -76,7 +76,7 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         if print_list:
             print('The files in {} are:\n {}'.format(path, files))
         response = False
-        dict_response = defaultdict(lambda : False, y=True)
+        dict_response = defaultdict(lambda: False, y=True)
         if rm.lower() == 'ask':
             response = dict_response[input('Delete all files in '
                                            '{}? [yn]: '.format(path))]
@@ -84,7 +84,40 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
             for name in files:
                 os.remove(name)
         else:
-            print('None of the files removed from "{}".'.format(path))
+            print('No files removed from "{}".'.format(path))
 
 
 # TODO add if __name__ == __main__ functionality
+if __name__ == '__main__':
+    from argparse import ArgumentParser
+    parser = ArgumentParser(
+        description='Clean out scratch folder on compute nodes')
+    parser.add_argument('nodes', nargs='+', type=str,
+                        help='Node or nodes on which to look for scratch files')
+    p_group = parser.add_mutually_exclusive_group()
+    p_group.add_argument('-p', '--print', action='store_true',
+                         help='Print list of files')
+    p_group.add_argument('-n', '--no_print', action='store_true',
+                         help='Do not print the list of files')
+    d_group = parser.add_mutually_exclusive_group()
+    d_group.add_argument('-d', '--delete', action='store_true',
+                         help='Delete the files without asking')
+    d_group.add_argument('-a', '--ask', action='store_true',
+                         help='Ask before deleting the files')
+    parser.add_argument('-l', '--list_only', action='store_true',
+                        help='Only list the files without deleting '
+                             'anything\nNote: this will override -d, but not '
+                             '-a')
+    parser.add_argument('-f', '--folder', type=str, default='',
+                        help='Subfolder on node. Defaults to username')
+    args = parser.parse_args()
+    if args.ask or not (args.delete or args.ask or args.list_only):
+        a_rm = 'ask'
+    elif args.delete:
+        a_rm = True
+    else:
+        a_rm = False
+    _print = False if args.no_print else True
+    a_subfolder = args.folder if args.folder else None
+    for a_node in args.nodes:
+        clean_node(a_node, print_list=_print, rm=a_rm, subfolder=a_subfolder)
