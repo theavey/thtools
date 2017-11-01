@@ -59,6 +59,8 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         if response is True or rm is True:
             for name in files:
                 os.remove(name)
+        else:
+            print('None of the files removed from "{}".'.format(path))
 
 
 # TODO add if __name__ == __main__ functionality
