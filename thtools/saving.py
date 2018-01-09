@@ -40,4 +40,11 @@ def load_obj(name):
 
 
 def make_obj_dir(directory='./'):
-    os.makedirs(directory+'obj', exist_ok=True)
+    try:
+        os.makedirs(directory+'obj')
+    except OSError as e:
+        if e.errno == 17:
+            pass  # catch and ignore FileExistsError (or the Py2 equivalent)
+        else:
+            raise
+
