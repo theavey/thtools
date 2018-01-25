@@ -52,7 +52,7 @@ def get_node_mem(node=None):
     m_proc = re.search(r'num_proc=(\d+)', proc.stdout)
     p_of_c = n_slots / float(m_proc.group(1))
     m = re.search(r'mem_total=(\d+\.\d+)M', proc.stdout)
-    return int(float(m.group(1)) * 0.98 * p_of_c / 1000)
+    return int(float(m.group(1)) * 0.98 * p_of_c / 1000.)
 
 
 def running_jobs_names(user=None):
