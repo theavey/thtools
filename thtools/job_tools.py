@@ -1,0 +1,85 @@
+"""
+Functions helpful for some job management and such
+
+"""
+########################################################################
+#                                                                      #
+# This script was written by Thomas Heavey in 2018.                    #
+#        theavey@bu.edu     thomasjheavey@gmail.com                    #
+#                                                                      #
+# Copyright 2018 Thomas J. Heavey IV                                   #
+#                                                                      #
+# Licensed under the Apache License, Version 2.0 (the "License");      #
+# you may not use this file except in compliance with the License.     #
+# You may obtain a copy of the License at                              #
+#                                                                      #
+#    http://www.apache.org/licenses/LICENSE-2.0                        #
+#                                                                      #
+# Unless required by applicable law or agreed to in writing, software  #
+# distributed under the License is distributed on an "AS IS" BASIS,    #
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or      #
+# implied.                                                             #
+# See the License for the specific language governing permissions and  #
+# limitations under the License.                                       #
+#                                                                      #
+########################################################################
+
+
+import os
+import re
+import shlex
+import subprocess
+
+
+def get_node_mem(node):
+    """
+    Get an approximate max memory for current node in GB
+
+    :param str node: name of the node, such as 'scc-na1.scc.bu.edu'
+    :return: 98% of the memory available
+    :rtype: int
+    """
+    cl = shlex.split('qconf -se {}'.format(node))
+    proc = run(cl)
+    m = re.search(r'mem_total=(\d+\.\d+)M', proc.stdout)
+    return int(float(m.group(1)) * 0.98 / 1000)
+
+
+def running_jobs_names(user=None):
+    """
+    Return the list of job names for a certain user
+
+    :param str user: The user to list the jobs for. If user is None,
+        the current user will be taken from the environment variable USER.
+    :return: A list of the names of the currently running jobs
+    :rtype: list
+    """
+    if user is None:
+        user = os.environ['USER']
+    j_ns = []
+    proc = run(['qstat', '-r', '-u', user])
+    for line in proc.stdout.splitlines():
+        if 'Full jobname' in line:
+            m = re.search(r'Full jobname:\s+(\S+)', line)
+            j_ns.append(m.group(1))
+    return j_ns
+
+
+def run(cl):
+    """
+    Use subprocess.run with the given command line and (my) standard options
+
+    Note, unfortunately, subprocess.run was only available starting in py3.5,
+    and I don't particularly feel like re-writing it right now. Maybe there's
+    some easy way to fix this that I'm not thinking of right now (import from
+    future? literally copy and paste its definition?)
+
+    :param list cl: Command line argument as a list of strings (e.g.,
+    as returned by shlex.split).
+    :return: The CompletedProcess instance
+    :rtype: subprocess.CompletedProcess
+    """
+    return subprocess.run(cl,
+                          universal_newlines=True,
+                          stdout=subprocess.PIPE,
+                          stderr=subprocess.STDOUT)
