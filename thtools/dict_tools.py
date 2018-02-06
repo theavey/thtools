@@ -1,10 +1,15 @@
+"""
+Functions helpful for using dictionaries
+
+"""
+
 
 ########################################################################
 #                                                                      #
 # This script was written by Thomas Heavey in 2018.                    #
 #        theavey@bu.edu     thomasjheavey@gmail.com                    #
 #                                                                      #
-# Copyright 2017-18 Thomas J. Heavey IV                                #
+# Copyright 2018 Thomas J. Heavey IV                                   #
 #                                                                      #
 # Licensed under the Apache License, Version 2.0 (the "License");      #
 # you may not use this file except in compliance with the License.     #
@@ -21,9 +26,9 @@
 #                                                                      #
 ########################################################################
 
-from __future__ import absolute_import
 
-from .dirs import cd
-from .saving import make_obj_dir, save_obj, load_obj
-from .job_tools import run, get_node_mem, running_jobs_names
-from .dict_tools import merge_two_dicts
+def merge_two_dicts(x, y):
+    """Given two dicts, merge them into a new dict as a shallow copy."""
+    z = x.copy()
+    z.update(y)
+    return z
