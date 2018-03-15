@@ -37,3 +37,26 @@ def cd(new_dir, ignore_blank=False):
         yield
     finally:
         os.chdir(prev_dir)
+
+
+def resolve_path(f, *dirs):
+    """
+    Try to find `f` here or in `dirs`; return absolute path to `f` if found
+
+    If `f` is not found in `dirs`, it is return as-is.
+
+    This also will search as if it's already an absolute path then in the
+    current directory before looking in `dirs`.
+
+    :param str f: The file to be searched for
+    :param list(str) dirs: List of directories in which to search.
+    :return: The absolute path to `f`.
+    :rtype: str
+    """
+    _dirs = ['', './']
+    _dirs += dirs
+    for d in _dirs:
+        path = os.path.join(d, f)
+        if os.path.isfile(path):
+            return os.path.abspath(path)
+    return f

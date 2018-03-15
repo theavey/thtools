@@ -23,7 +23,7 @@
 
 from __future__ import absolute_import
 
-from .dirs import cd
+from .dirs import cd, resolve_path
 from .saving import make_obj_dir, save_obj, load_obj
 from .job_tools import run, get_node_mem, running_jobs_names
 from .dict_tools import merge_two_dicts
