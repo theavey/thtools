@@ -30,12 +30,18 @@ import pickle
 
 
 def save_obj(obj, name):
-    with open('obj/'+ name + '.pkl', 'wb') as f:
+    path = _make_path(name)
+    with open(path, 'wb') as f:
         pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+    return path
 
 
 def load_obj(name):
-    with open('obj/' + name + '.pkl', 'rb') as f:
+    if '.pkl' in name:
+        path = name
+    else:
+        path = _make_path(name)
+    with open(path, 'rb') as f:
         return pickle.load(f)
 
 
@@ -47,4 +53,8 @@ def make_obj_dir(directory='./'):
             pass  # catch and ignore FileExistsError (or the Py2 equivalent)
         else:
             raise
+
+def _make_path(name):
+    d, b = os.path.split(name)
+    return os.path.join(d, 'obj/', b + '.pkl')
 
