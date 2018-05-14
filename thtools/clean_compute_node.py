@@ -27,8 +27,17 @@ Tools to cleanup scratch space on compute nodes
 ########################################################################
 
 from collections import defaultdict
-import os
 import getpass
+import os
+try:
+    from pathlib import Path
+    Path().expanduser()
+except (ImportError, AttributeError):
+    try:
+        from pathlib2 import Path
+    except ImportError:
+        raise ImportError('Could not find the required pathlib/pathlib2\n'
+                          'Try using Python >= 2.6')
 try:
     from thtools import cd
 except ImportError:
@@ -85,11 +94,14 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         _subfolder = getpass.getuser()
     else:
         _subfolder = subfolder
-    path = '{}/scratch/{}'.format(_node, _subfolder)
+    path = Path('{}/scratch/{}'.format(_node, _subfolder))
     if rm is True or rm is False:
         _rm = rm
     else:
         _rm = rm.lower()
+    if not path.is_dir():
+        print('No folder: {}'.format(path))
+        return None
     with cd(path):
         files = os.listdir('./')
         if len(files) == 0:
@@ -143,4 +155,9 @@ if __name__ == '__main__':
     _print = False if args.no_print else True
     a_subfolder = args.folder if args.folder else None
     for a_node in args.nodes:
-        clean_node(a_node, print_list=_print, rm=a_rm, subfolder=a_subfolder)
+        try:
+            clean_node(a_node, print_list=_print, rm=a_rm,
+                       subfolder=a_subfolder)
+        except ValueError as e:
+            print(e)
+            print('continuing with rest...')
