@@ -95,32 +95,38 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
     else:
         _subfolder = subfolder
     path = Path('{}/scratch/{}'.format(_node, _subfolder))
+    if path.is_dir():
+        paths = [path]
+    else:
+        p = path.parent
+        paths = list(p.glob(_subfolder))
+        if not paths:
+            print('No folder: {}'.format(path))
+            return None
     if rm is True or rm is False:
         _rm = rm
     else:
         _rm = rm.lower()
-    if not path.is_dir():
-        print('No folder: {}'.format(path))
-        return None
-    with cd(path):
-        files = os.listdir('./')
-        if len(files) == 0:
-            print('No files in {}'.format(path))
-            return None
-        if print_list:
-            print('The files in {} are:\n {}'.format(path, files))
-        response = False
-        dict_response = defaultdict(lambda: False, y=True)
-        if _rm is False:
-            return None
-        if _rm == 'ask':
-            response = dict_response[input('Delete all files in '
-                                           '{}? [yn]: '.format(path))]
-        if response is True or _rm is True:
-            for name in files:
-                os.remove(name)
-        else:
-            print('No files removed from "{}".'.format(path))
+    for path in paths:
+        with cd(path):
+            files = os.listdir('./')
+            if len(files) == 0:
+                print('No files in {}'.format(path))
+                return None
+            if print_list:
+                print('The files in {} are:\n {}'.format(path, files))
+            response = False
+            dict_response = defaultdict(lambda: False, y=True)
+            if _rm is False:
+                return None
+            if _rm == 'ask':
+                response = dict_response[input('Delete all files in '
+                                               '{}? [yn]: '.format(path))]
+            if response is True or _rm is True:
+                for name in files:
+                    os.remove(name)
+            else:
+                print('No files removed from "{}".'.format(path))
 
 
 if __name__ == '__main__':
