@@ -4,3 +4,5 @@ ParaTemp.iml
 
 # ignore compiled python files
 *.pyc
+
+*.egg-info/
