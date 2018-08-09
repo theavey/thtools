@@ -37,11 +37,13 @@ def get_node_mem(node=None):
 
     This also will scale by the number of processors assigned divided by the
     total number of processors for the given host node.
+    For example, if the submitted job is only using 8 of a total of 16 cores
+    on the node, this will return 98% of half of the node's total memory.
 
     :param str node: name of the node, such as 'scc-na1.scc.bu.edu'. If this
         is not given or set to None, it will be taken from the environment
         variable HOSTNAME.
-    :return: 98% of the memory available
+    :return: 98% of the memory available, likely in GB
     :rtype: int
     """
     n_slots = float(os.environ['NSLOTS'])
