@@ -38,12 +38,12 @@ def get_node_mem(node=None):
     This also will scale by the number of processors assigned divided by the
     total number of processors for the given host node.
     For example, if the submitted job is only using 8 of a total of 16 cores
-    on the node, this will return 98% of half of the node's total memory.
+    on the node, this will return 90% of half of the node's total memory.
 
     :param str node: name of the node, such as 'scc-na1.scc.bu.edu'. If this
         is not given or set to None, it will be taken from the environment
         variable HOSTNAME.
-    :return: 98% of the memory available, likely in GB
+    :return: 90% of the memory available, likely in GB
     :rtype: int
     """
     n_slots = float(os.environ['NSLOTS'])
@@ -54,7 +54,7 @@ def get_node_mem(node=None):
     m_proc = re.search(r'num_proc=(\d+)', proc.stdout)
     p_of_c = n_slots / float(m_proc.group(1))
     m = re.search(r'mem_total=(\d+\.\d+)M', proc.stdout)
-    return int(float(m.group(1)) * 0.98 * p_of_c / 1000.)
+    return int(float(m.group(1)) * 0.90 * p_of_c / 1000.)
 
 
 def running_jobs_names(user=None):
