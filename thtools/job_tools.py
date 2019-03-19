@@ -52,6 +52,8 @@ def get_node_mem(node=None):
     cl = shlex.split('qconf -se {}'.format(node))
     proc = run(cl)
     m_proc = re.search(r'num_proc=(\d+)', proc.stdout)
+    if m_proc is None:
+        raise ValueError('Could not find n_proc for {}'.format(node))
     p_of_c = n_slots / float(m_proc.group(1))
     m = re.search(r'mem_total=(\d+\.\d+)M', proc.stdout)
     return int(float(m.group(1)) * 0.90 * p_of_c / 1000.)
