@@ -90,10 +90,7 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
     except KeyError:
         raise ValueError('Unable to parse node input "{}".\n Examples: "na1" |'
                          '"scc-na1" | "/net/scc-na1"')
-    if subfolder is None:
-        _subfolder = getpass.getuser()
-    else:
-        _subfolder = subfolder
+    _subfolder = getpass.getuser() if subfolder is None else subfolder
     path = Path('{}/scratch/{}'.format(_node, _subfolder))
     if path.is_dir():
         paths = [path]
@@ -103,7 +100,7 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         if not paths:
             print('No folder: {}'.format(path))
             return None
-    if rm is True or rm is False:
+    if isinstance(rm, bool):
         _rm = rm
     else:
         _rm = rm.lower()
@@ -112,13 +109,13 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
             files = os.listdir('./')
             if len(files) == 0:
                 print('No files in {}'.format(path))
-                return None
+                continue
             if print_list:
                 print('The files in {} are:\n {}'.format(path, files))
             response = False
             dict_response = defaultdict(lambda: False, y=True)
             if _rm is False:
-                return None
+                continue
             if _rm == 'ask':
                 response = dict_response[input('Delete all files in '
                                                '{}? [yn]: '.format(path))]
