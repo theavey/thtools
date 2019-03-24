@@ -105,25 +105,25 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
     else:
         _rm = rm.lower()
     for path in paths:
-        with cd(path):
-            files = os.listdir('./')
-            if len(files) == 0:
-                print('No files in {}'.format(path))
-                continue
-            if print_list:
-                print('The files in {} are:\n {}'.format(path, files))
-            response = False
-            dict_response = defaultdict(lambda: False, y=True)
-            if _rm is False:
-                continue
-            if _rm == 'ask':
-                response = dict_response[input('Delete all files in '
-                                               '{}? [yn]: '.format(path))]
-            if response is True or _rm is True:
-                for name in files:
-                    os.remove(name)
-            else:
-                print('No files removed from "{}".'.format(path))
+        files = list(path.glob('*'))
+        if len(files) == 0:
+            print('No files in {}'.format(path))
+            continue
+        if print_list:
+            print('The files in {} are:\n {}'.format(path, [f.name for f in
+                                                            files]))
+        response = False
+        dict_response = defaultdict(lambda: False, y=True)
+        if _rm is False:
+            continue
+        if _rm == 'ask':
+            response = dict_response[input('Delete all files in '
+                                           '{}? [yn]: '.format(path))]
+        if response is True or _rm is True:
+            for f in files:
+                f.unlink()
+        else:
+            print('No files removed from "{}".'.format(path))
 
 
 if __name__ == '__main__':
