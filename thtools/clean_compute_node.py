@@ -27,6 +27,7 @@ Tools to cleanup scratch space on compute nodes
 ########################################################################
 
 from collections import defaultdict
+import datetime
 import getpass
 import os
 try:
@@ -59,7 +60,7 @@ dict_node = {3: '/net/scc-{}',
              12: '{}'}
 
 
-def clean_node(node, print_list=True, rm='ask', subfolder=None):
+def clean_node(node, print_list=True, rm='ask', subfolder=None, older_than=0):
     """
     Clean out scratch folder on a compute node.
 
@@ -83,6 +84,8 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         which to look.
         If subfolder is None, the user's username will be found with
         getpass.getuser() and that will be used as the subfolder.
+    :param int older_than: Default: 0. This gives the minimum age for files
+        to list/delete.
     :return: None
     """
     try:
@@ -106,6 +109,7 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
         _rm = rm.lower()
     for path in paths:
         files = list(path.glob('*'))
+        files = [f for f in files if is_older_than(f, older_than)]
         if len(files) == 0:
             print('No files in {}'.format(path))
             continue
@@ -124,6 +128,20 @@ def clean_node(node, print_list=True, rm='ask', subfolder=None):
                 f.unlink()
         else:
             print('No files removed from "{}".'.format(path))
+
+
+def is_older_than(file, days):
+    """
+    Test if `file` was last modified more than `days` ago
+
+    :param pathlib.Path file: Path object of the file to check
+    :param int days: number of days to test
+    :return: Whether the file is older than days
+    :rtype: bool
+    """
+    min_age = datetime.timedelta(days=days)
+    mtime = datetime.datetime.fromtimestamp(file.stat().st_mtime)
+    return min_age > mtime - datetime.datetime.now()
 
 
 if __name__ == '__main__':
@@ -148,6 +166,9 @@ if __name__ == '__main__':
                              '-a')
     parser.add_argument('-f', '--folder', type=str, default='',
                         help='Subfolder on node. Defaults to username')
+    parser.add_argument('-o', '--days_old', type=int, default=0,
+                        help='Min age (in days) for which files will be listed '
+                             'or removed')
     args = parser.parse_args()
     if args.ask or not (args.delete or args.ask or args.list_only):
         a_rm = 'ask'
